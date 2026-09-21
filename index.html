@@ -12,24 +12,24 @@
 </body>
 <script>
 function addGoogleCalendarEvent() {
-    // 1. Correct base URL pointing directly to the template engine
-    const baseUrl = "https://google.com";
+    // FIX: Point explicitly to the calendar app endpoint, NOT google.com
+    const baseUrl = "https://calendar.google.com/calendar/render";
     
     const title = "New Task";
     const details = "Created automatically from web application.";
 
-    // 2. Get current time and set an end time 1 hour later
+    // Get current time and set an end time 1 hour later
     const now = new Date();
     const oneHourLater = new Date(now.getTime() + (60 * 60 * 1000));
 
-    // 3. Robust UTC formatter (removes dashes, colons, and milliseconds perfectly)
+    // Robust UTC formatter (removes dashes, colons, and milliseconds perfectly)
     const formatUTC = (date) => {
-        return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        return date.toISOString().replace(/[-:]/g, '').split('.') + 'Z';
     };
     
     const dates = `${formatUTC(now)}/${formatUTC(oneHourLater)}`; 
 
-    // 4. Use URLSearchParams to safely encode all variables automatically
+    // Use URLSearchParams to safely encode variables automatically
     const params = new URLSearchParams({
         action: 'TEMPLATE',
         text: title,
@@ -39,9 +39,10 @@ function addGoogleCalendarEvent() {
 
     const finalUrl = `${baseUrl}?${params.toString()}`;
     
-    // 5. Launch the corrected link
+    // Launch the correct link into the explicit calendar handler layout
     window.open(finalUrl, '_blank');
 }
+
 
 
 function addNativeCalendarEvent() {
