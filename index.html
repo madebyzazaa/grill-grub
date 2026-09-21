@@ -1,21 +1,95 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <title>Grill & Rub — Port Harcourt's Favourite Food Stop, Delivered Hot</title>
-    <meta property="og:image" content="https://bolt.new/static/og_default.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<button>method 1</button>
+<button>method 2</button>
+<button>method 3</button>
+</body>
+<script>
+function addGoogleCalendarEvent() {
+    const baseUrl = "https://google.com";
+    const title = encodeURIComponent("New Task");
+    const details = encodeURIComponent("Created automatically from web application.");
+
+    // Get current time and set an end time 1 hour later
+    const now = new Date();
+    const oneHourLater = new Date(now.getTime() + (60 * 60 * 1000));
+
+    // Format dates to UTC: YYYYMMDDTHHmmSSZ
+    const formatUTC = (date) => date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const dates = `${formatUTC(now)}/${formatUTC(oneHourLater)}`; 
+
+    const finalUrl = `${baseUrl}&text=${title}&dates=${dates}&details=${details}`;
+    
+    window.open(finalUrl, '_blank');
+}
+
+
+function addNativeCalendarEvent() {
+    const title = "New Task";
+    const description = "Created automatically from web application.";
+
+    // Get current time and set an end time 1 hour later
+    const now = new Date();
+    const oneHourLater = new Date(now.getTime() + (60 * 60 * 1000));
+
+    // Format dates to UTC string format for .ics compatibility
+    const formatICS = (date) => date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+    const icsContent = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Your Web App//NONSGML v1.0//EN",
+        "BEGIN:VEVENT",
+        `DTSTART:${formatICS(now)}`,
+        `DTEND:${formatICS(oneHourLater)}`,
+        `SUMMARY:${title}`,
+        `DESCRIPTION:${description}`,
+        "END:VEVENT",
+        "END:VCALENDAR"
+    ].join("\r\n");
+
+    const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "new_task.ics");
+    document.body.appendChild(link);
+    link.click();
+    
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+
+function launchAndroidCalendarIntent() {
+    const title = encodeURIComponent("New Task");
+    const description = encodeURIComponent("Created automatically from web application.");
+    
+    // Get current time in milliseconds and set end time 1 hour later
+    const startTimeMilli = Date.now();
+    const endTimeMilli = startTimeMilli + (60 * 60 * 1000);
+
+    // Deep link structure utilizing standard Android Calendar parameters
+    const intentUrl = `intent:#Intent;action=android.intent.action.INSERT;category=android.intent.category.DEFAULT;type=vnd.android.cursor.dir/event;S.title=${title};S.description=${description};EL.beginTime=${startTimeMilli};EL.endTime=${endTimeMilli};end`;
+
+    window.location.href = intentUrl;
+}
+
+document.getElementsByTagName('button').item(0).addEventListener('click', ()=>{console.log('script')
+addGoogleCalendarEvent()
+})
+document.getElementsByTagName('button').item(1).addEventListener('click', ()=>{
+addNativeCalendarEvent()
+})
+document.getElementsByTagName('button').item(2).addEventListener('click', ()=>{
+launchAndroidCalendarIntent()
+})
+</script>
 </html>
